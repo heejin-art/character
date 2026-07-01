@@ -134,17 +134,30 @@
   </div>
 
   <script>
-    // "이 페이지에서 바로 만나기" — 확장의 pet.css + content.js를 그대로 주입
-    document.getElementById("dmPreviewBtn").addEventListener("click", () => {
-      const msg = document.getElementById("dmPreviewMsg");
-      if (window.__deskmateLoaded) { msg.textContent = "이미 구름이가 둥실둥실 떠다니고 있어요! ☁️"; return; }
+    // 확장의 pet.css + content.js를 그대로 주입 → 구름이 등장
+    function loadPet() {
+      if (window.__deskmateLoaded) return false;
       const link = document.createElement("link");
       link.rel = "stylesheet"; link.href = "deskmate-extension/pet.css";
       document.head.appendChild(link);
       const s = document.createElement("script");
       s.src = "deskmate-extension/content.js";
       document.body.appendChild(s);
-      msg.textContent = "구름이 등장! 이 페이지 위를 떠다녀요 ☁️ (마우스 올리면 별·말걸기 툴바)";
+      return true;
+    }
+
+    // 페이지에 들어오면 구름이가 바로 나타남
+    window.addEventListener("load", () => {
+      loadPet();
+      document.getElementById("dmPreviewMsg").textContent = "구름이가 이 페이지 위를 떠다녀요 ☁️ (마우스 올리면 별·말걸기 툴바)";
+    });
+
+    // 버튼: 혹시 숨겼거나 아직 안 떴을 때 다시 부르기
+    document.getElementById("dmPreviewBtn").addEventListener("click", () => {
+      const msg = document.getElementById("dmPreviewMsg");
+      msg.textContent = loadPet()
+        ? "구름이 등장! 이 페이지 위를 떠다녀요 ☁️"
+        : "이미 구름이가 둥실둥실 떠다니고 있어요! ☁️";
     });
   </script>
 </body>
