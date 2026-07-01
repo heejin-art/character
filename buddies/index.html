@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>말랑 친구들 · Floating Buddies</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- 배경 -->
+  <div class="sky">
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
+  </div>
+
+  <!-- 펫이 돌아다니는 무대 -->
+  <div id="stage" class="stage">
+    <div id="pet" class="pet" data-char="mochi">
+      <div class="speech" id="speech"></div>
+      <div class="body">
+        <div class="deco"></div>
+        <div class="face">
+          <div class="eye left"></div>
+          <div class="eye right"></div>
+          <div class="cheek left"></div>
+          <div class="cheek right"></div>
+          <div class="mouth"></div>
+        </div>
+      </div>
+      <div class="shadow"></div>
+    </div>
+  </div>
+
+  <!-- 컨트롤 패널 -->
+  <div class="panel">
+    <div class="picker" id="picker"></div>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-label">🍚 배고픔</span>
+        <div class="bar"><div class="fill hunger" id="hungerBar"></div></div>
+      </div>
+      <div class="stat">
+        <span class="stat-label">💗 기분</span>
+        <div class="bar"><div class="fill mood" id="moodBar"></div></div>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button id="feedBtn" class="btn feed">🍪 먹이주기</button>
+      <button id="petBtn" class="btn pet-btn">✋ 쓰다듬기</button>
+      <button id="talkBtn" class="btn talk">💬 말걸기</button>
+    </div>
+
+    <p class="hint">캐릭터를 <b>클릭</b>하면 반응하고, <b>드래그</b>하면 옮길 수 있어요 · 마음에 드는 친구를 위에서 골라보세요</p>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

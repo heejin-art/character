@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "데스크 메이트 · 냥이",
+  "version": "1.0",
+  "description": "어떤 웹사이트를 띄워도 그 위에서 돌아다니는 귀여운 펫. 클릭하면 반응하고, 먹이도 주고, 말도 걸 수 있어요.",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["pet.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "데스크 메이트 켜기/끄기"
+  },
+  "background": { "service_worker": "background.js" }
+}

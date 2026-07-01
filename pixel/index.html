@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>또리 · 픽셀 다마고치</title>
+<style>
+  :root { --shell:#8fd14f; --shell2:#6fb63a; --lcd:#c6d84b; --lcd-dark:#3a4a1e; }
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  html,body { height:100%; }
+  body {
+    display:flex; align-items:center; justify-content:center; min-height:100%;
+    background:radial-gradient(circle at 50% 20%, #2b3a5a, #141a2b);
+    font-family:"DungGeunMo","Galmuri11",ui-monospace,"Courier New",monospace;
+    user-select:none; padding:16px; color:#2a3a12;
+  }
+  .top-link { position:fixed; top:12px; left:14px; color:#9fb4d6; text-decoration:none; font-size:13px; z-index:20; }
+  .top-link:hover { color:#fff; }
+
+  /* ===== 기기 본체 ===== */
+  .device {
+    width:min(360px,92vw);
+    background:linear-gradient(160deg,var(--shell),var(--shell2));
+    border-radius:38px 38px 46px 46px;
+    padding:26px 24px 30px;
+    box-shadow: inset 0 3px 0 rgba(255,255,255,.4), inset 0 -6px 14px rgba(0,0,0,.25),
+                0 20px 50px rgba(0,0,0,.5);
+  }
+  .brand { text-align:center; font-size:13px; letter-spacing:2px; color:#3c5a18; opacity:.7; margin-bottom:10px; font-weight:bold; }
+
+  /* ===== LCD ===== */
+  .screen-frame {
+    background:#2b3410; border-radius:16px; padding:10px;
+    box-shadow: inset 0 4px 10px rgba(0,0,0,.6);
+  }
+  .lcd {
+    position:relative; width:100%; aspect-ratio:1/0.86;
+    background:
+      repeating-linear-gradient(0deg, rgba(0,0,0,.05) 0 2px, transparent 2px 4px),
+      linear-gradient(160deg,#cdd85a,#a9bb3e);
+    border-radius:6px; overflow:hidden;
+    image-rendering:pixelated;
+  }
+  #petCanvas { position:absolute; left:0; top:0; width:100%; height:100%; image-rendering:pixelated; }
+
+  /* HUD */
+  .hud { position:absolute; top:6px; left:8px; right:8px; display:flex; justify-content:space-between; font-size:11px; color:var(--lcd-dark); }
+  .hud .hearts span { letter-spacing:1px; }
+  .speech {
+    position:absolute; left:50%; top:8px; transform:translateX(-50%) scale(0);
+    background:var(--lcd-dark); color:var(--lcd); padding:5px 9px; border-radius:4px;
+    font-size:12px; white-space:nowrap; opacity:0; transition:.18s; z-index:5;
+    box-shadow:0 2px 0 rgba(0,0,0,.3);
+  }
+  .speech.show { transform:translateX(-50%) scale(1); opacity:1; }
+  .poop { position:absolute; font-size:16px; bottom:6px; transition:opacity .3s; }
+
+  /* ===== 컨트롤 ===== */
+  .controls { display:flex; align-items:center; justify-content:space-between; margin-top:20px; }
+  .dpad { position:relative; width:78px; height:78px; }
+  .dpad div { position:absolute; background:#3c5a18; box-shadow:inset 0 -2px 0 rgba(0,0,0,.3); }
+  .dpad .h { top:29px; left:8px; width:62px; height:20px; border-radius:4px; }
+  .dpad .v { left:29px; top:8px; width:20px; height:62px; border-radius:4px; }
+  .dpad .c { top:29px; left:29px; width:20px; height:20px; background:#2f4712; z-index:2; }
+
+  .abtns { display:flex; gap:14px; }
+  .rbtn {
+    width:58px; height:58px; border:none; border-radius:50%; cursor:pointer;
+    font-size:22px; color:#fff; font-family:inherit; font-weight:bold;
+    box-shadow: inset 0 3px 0 rgba(255,255,255,.35), 0 5px 0 rgba(0,0,0,.28);
+    transition:transform .08s, box-shadow .08s;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .rbtn:active { transform:translateY(4px); box-shadow: inset 0 3px 0 rgba(255,255,255,.35), 0 1px 0 rgba(0,0,0,.28); }
+  .rbtn.a { background:linear-gradient(160deg,#ff8a5c,#e85f37); }
+  .rbtn.b { background:linear-gradient(160deg,#6bc2ff,#3a8fe0); }
+  .rbtn .lbl { position:absolute; }
+
+  .minibtns { display:flex; gap:8px; justify-content:center; margin-top:16px; }
+  .minibtns button {
+    flex:1; max-width:120px; background:#3c5a18; color:#dfeeae; border:none; cursor:pointer;
+    padding:9px 6px; border-radius:8px; font-family:inherit; font-size:13px; font-weight:bold;
+    box-shadow:0 3px 0 rgba(0,0,0,.3); transition:transform .08s;
+  }
+  .minibtns button:active { transform:translateY(3px); box-shadow:0 0 0 rgba(0,0,0,.3); }
+  .minibtns button.active { background:#dfeeae; color:#3c5a18; }
+  .caption { text-align:center; color:#3c5a18; font-size:11px; margin-top:12px; opacity:.75; line-height:1.5; }
+</style>
+</head>
+<body>
+  <a class="top-link" href="../index.html">← 기획안 목록</a>
+  <div class="device">
+    <div class="brand">◦ TTORI-GOTCHI ◦</div>
+    <div class="screen-frame">
+      <div class="lcd" id="lcd">
+        <div class="hud">
+          <div class="hearts">🍖<span id="hungerHearts"></span></div>
+          <div class="hearts"><span id="moodHearts"></span>♥</div>
+        </div>
+        <div class="speech" id="speech"></div>
+        <canvas id="petCanvas" width="64" height="56"></canvas>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="dpad"><div class="h"></div><div class="v"></div><div class="c"></div></div>
+      <div class="abtns">
+        <button class="rbtn a" id="feedBtn" title="먹이">🍖</button>
+        <button class="rbtn b" id="playBtn" title="놀기">🎈</button>
+      </div>
+    </div>
+
+    <div class="minibtns">
+      <button data-char="slime" class="active">🟢 슬라임</button>
+      <button data-char="ghost">👻 유령</button>
+      <button data-char="chick">🐥 병아리</button>
+      <button id="talkBtn">💬 말걸기</button>
+    </div>
+    <p class="caption">화면 속 <b>또리를 탭</b>하면 반응해요 · 🍖먹이 · 🎈놀기 · 💬말걸기<br>배고픔·기분을 잘 챙겨주세요!</p>
+  </div>
+
+<script>
+const PALETTES = {
+  slime: { name:"슬라임", body:"#6ecb3f", light:"#a6e86a", dark:"#2f6b1f", type:"slime",
+    idle:["몰랑?","여긴 어디…","심심행","안녕!","뿅"], feed:["냠냠!","말랑 충전!","고마웡"], play:["와아 신나!","한번 더!","즐거워~"] },
+  ghost: { name:"유령", body:"#b39ddb", light:"#e6dcff", dark:"#5e4b8b", type:"ghost",
+    idle:["우우~","보이니…?","둥둥","히히","심심행"], feed:["영혼 충전…","맛있땅","고마웡~"], play:["꺄르륵!","재밌땅","또 놀자!"] },
+  chick: { name:"병아리", body:"#ffd54a", light:"#fff0a6", dark:"#c9971a", type:"chick",
+    idle:["삐약!","배고파삐약","콩콩","안녕삐약","졸려…"], feed:["삐약삐약 냠!","맛나삐약","고마워삐약"], play:["파닥파닥!","신나삐약","또또!"] },
+};
+
+const cv = document.getElementById("petCanvas");
+const ctx = cv.getContext("2d");
+const lcd = document.getElementById("lcd");
+const speech = document.getElementById("speech");
+const hungerHearts = document.getElementById("hungerHearts");
+const moodHearts = document.getElementById("moodHearts");
+
+let char = "slime";
+let hunger = 4, mood = 4;      // 0~5
+let posX = 26, dir = 1, targetX = 26;
+let bounceF = 0, blink = 0, mouth = 0, mode = "idle", modeT = 0, tick = 0;
+let hasPoop = false;
+
+/* ---------- 그리기 (저해상도 → 픽셀 확대) ---------- */
+function px(x,y,w,h,color){ ctx.fillStyle=color; ctx.fillRect(x,y,w,h); }
+
+function drawPet(){
+  ctx.clearRect(0,0,64,56);
+  const p = PALETTES[char];
+  const bx = posX;                        // 좌상단 기준
+  const by = 30 + (bounceF? -2:0);        // 위아래 바운스
+  const eatFace = mode==="feed";
+  const happy = mode==="play";
+
+  // 그림자
+  ctx.fillStyle = "rgba(60,90,24,.25)";
+  ctx.fillRect(bx+2, 50, 20, 3);
+
+  // 몸통 실루엣 (반지름 기반 픽셀 원)
+  const cx = bx+12, cy = by+8, r = 11;
+  for(let y=-r; y<=r; y++){
+    for(let x=-r; x<=r; x++){
+      if(x*x + y*y <= r*r){
+        const edge = x*x+y*y > (r-2)*(r-2);
+        ctx.fillStyle = edge ? p.dark : p.body;
+        ctx.fillRect(cx+x, cy+y, 1, 1);
+      }
+    }
+  }
+  // 하이라이트
+  px(cx-6, cy-6, 3, 3, p.light);
+  px(cx-4, cy-7, 2, 2, p.light);
+
+  // 캐릭터별 장식
+  if(p.type==="ghost"){ // 아랫자락 물결
+    px(cx-9,cy+9,4,3,p.body); px(cx-2,cy+10,4,3,p.body); px(cx+5,cy+9,4,3,p.body);
+    px(cx-11,cy+8,2,2,p.dark); px(cx+9,cy+8,2,2,p.dark);
+  }
+  if(p.type==="chick"){ // 부리 + 볏
+    px(cx-1, cy-11, 3, 2, "#e8760d");      // 볏
+    px(cx-2, cy+2, 4, 3, "#ff9f1c"); px(cx-1, cy+3, 6, 2, "#ff9f1c"); // 부리
+  }
+
+  // 눈
+  const ey = cy - 2;
+  if(blink>0){
+    px(cx-6, ey+1, 3, 1, p.dark); px(cx+3, ey+1, 3, 1, p.dark);
+  } else {
+    px(cx-6, ey-1, 3, 4, "#20301a"); px(cx+3, ey-1, 3, 4, "#20301a");
+    px(cx-6, ey-1, 1, 1, "#fff"); px(cx+3, ey-1, 1, 1, "#fff");
+  }
+  // 볼
+  px(cx-8, ey+3, 2, 2, "rgba(255,120,150,.5)"); px(cx+6, ey+3, 2, 2, "rgba(255,120,150,.5)");
+  // 입
+  if(eatFace){ px(cx-2, ey+5, 4, (tick%2?3:1), "#7a2b2b"); }
+  else if(happy){ px(cx-3, ey+5, 6, 2, "#7a2b2b"); px(cx-3, ey+5, 1,1,p.body); px(cx+2, ey+5, 1,1,p.body); }
+  else { px(cx-1, ey+5, 2, 1, "#4a3320"); }
+
+  // 하트 파티클 (놀기/먹이)
+}
+
+/* ---------- 하트 표시 ---------- */
+function renderHearts(){
+  hungerHearts.textContent = "●".repeat(hunger) + "○".repeat(5-hunger);
+  moodHearts.textContent   = "●".repeat(mood)   + "○".repeat(5-mood);
+}
+
+/* ---------- 말풍선 ---------- */
+let sTimer=null;
+function say(t){ speech.textContent=t; speech.classList.add("show"); clearTimeout(sTimer); sTimer=setTimeout(()=>speech.classList.remove("show"),1900); }
+const pick = a => a[Math.floor(Math.random()*a.length)];
+
+/* ---------- 파티클(이모지) ---------- */
+function emojiBurst(emoji,n=4){
+  const rect=lcd.getBoundingClientRect();
+  for(let i=0;i<n;i++){
+    const d=document.createElement("div");
+    d.textContent=emoji; d.style.cssText=`position:absolute;font-size:16px;pointer-events:none;z-index:6;left:${40+Math.random()*30}%;top:45%;transition:all 1s ease-out;`;
+    lcd.appendChild(d);
+    requestAnimationFrame(()=>{ d.style.top="10%"; d.style.opacity="0"; d.style.transform=`translateX(${Math.random()*30-15}px)`; });
+    setTimeout(()=>d.remove(),1000);
+  }
+}
+
+/* ---------- 상호작용 ---------- */
+function setMode(m,dur){ mode=m; modeT=dur; }
+function feed(){
+  hunger=Math.min(5,hunger+1); mood=Math.min(5,mood+1); renderHearts();
+  setMode("feed",34); say(pick(PALETTES[char].feed)); emojiBurst("🍖",3);
+}
+function play(){
+  mood=Math.min(5,mood+1); renderHearts();
+  setMode("play",30); say(pick(PALETTES[char].play)); emojiBurst("🎈",4);
+  bounceHop();
+}
+function talk(){
+  const p=PALETTES[char];
+  say(hunger<=1 ? "배고파…" : mood<=1 ? "심심행…" : pick(p.idle));
+  setMode("play",18);
+}
+function bounceHop(){ let n=6; const iv=setInterval(()=>{ bounceF=n%2; if(--n<0){clearInterval(iv);bounceF=0;} },80); }
+
+cv.addEventListener("pointerdown",()=>{ setMode("play",24); say(pick(PALETTES[char].idle)); mood=Math.min(5,mood); emojiBurst("✨",3); bounceHop(); });
+document.getElementById("feedBtn").addEventListener("click",feed);
+document.getElementById("playBtn").addEventListener("click",play);
+document.getElementById("talkBtn").addEventListener("click",talk);
+document.querySelectorAll(".minibtns [data-char]").forEach(b=>{
+  b.addEventListener("click",()=>{
+    document.querySelectorAll(".minibtns [data-char]").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active"); char=b.dataset.char; say(PALETTES[char].idle[0]); setMode("play",20);
+  });
+});
+
+/* ---------- 메인 루프 ---------- */
+function loop(){
+  tick++;
+  // 배회: 목표 지점으로 천천히 이동
+  if(tick%2===0 && mode==="idle"){
+    if(Math.abs(posX-targetX)<2){
+      if(Math.random()<0.02){ targetX = 6 + Math.random()*40; }
+    } else {
+      dir = targetX>posX?1:-1; posX += dir; bounceF = (tick/2)%2;
+    }
+  }
+  if(mode==="idle" && Math.abs(posX-targetX)<2) bounceF=0;
+  // 깜빡임
+  if(blink>0) blink--; else if(Math.random()<0.01) blink=6;
+  // 모드 타이머
+  if(modeT>0){ if(--modeT===0) mode="idle"; }
+  drawPet();
+  requestAnimationFrame(loop);
+}
+
+/* ---------- 스탯 감소 ---------- */
+setInterval(()=>{
+  if(Math.random()<0.7) hunger=Math.max(0,hunger-1);
+  if(hunger<=1) mood=Math.max(0,mood-1);
+  renderHearts();
+  if(hunger<=1 && Math.random()<0.5) say("배고파…");
+}, 9000);
+
+renderHearts(); say("또리 등장! 반가워"); loop();
+</script>
+</body>
+</html>

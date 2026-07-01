@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>돌아다니는 펫 · 기획안 모음</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    font-family:"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+    background:linear-gradient(160deg,#eef4ff,#fef1f6 60%,#fff9ee);
+    color:#3a3550; min-height:100vh; padding:48px 20px 80px;
+  }
+  .wrap { max-width:1040px; margin:0 auto; }
+  header { text-align:center; margin-bottom:14px; }
+  h1 { font-size:34px; letter-spacing:-1px; }
+  h1 .emo { font-size:30px; }
+  .sub { color:#7a7590; margin-top:10px; font-size:15px; line-height:1.6; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:22px; margin-top:38px; }
+  .card {
+    background:#fff; border-radius:24px; overflow:hidden; text-decoration:none; color:inherit;
+    box-shadow:0 10px 30px rgba(90,80,140,.12); transition:transform .18s, box-shadow .18s;
+    display:flex; flex-direction:column; border:1px solid rgba(120,110,160,.08);
+  }
+  .card:hover { transform:translateY(-6px); box-shadow:0 18px 44px rgba(90,80,140,.2); }
+  .thumb { height:170px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+  .t1 { background:linear-gradient(160deg,#ffe6ef,#fff3f7); }
+  .t2 { background:linear-gradient(160deg,#8fd14f,#5d9e2e); }
+  .t3 { background:linear-gradient(160deg,#dbeafe,#f0f7ff); }
+  .thumb .big { font-size:74px; filter:drop-shadow(0 6px 10px rgba(0,0,0,.15)); animation:bob 3s ease-in-out infinite; }
+  @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+  .badge { position:absolute; top:12px; right:12px; background:rgba(255,255,255,.85); color:#6a6478;
+    font-size:11px; font-weight:700; padding:5px 10px; border-radius:20px; }
+  .body { padding:20px 22px 24px; flex:1; display:flex; flex-direction:column; }
+  .body h2 { font-size:20px; margin-bottom:4px; }
+  .tag { font-size:12px; color:#a59fbb; font-weight:700; letter-spacing:.5px; margin-bottom:10px; }
+  .body p { font-size:14px; color:#6a6478; line-height:1.65; flex:1; }
+  .feat { display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+  .feat span { font-size:11.5px; background:#f3f0fa; color:#6a6478; padding:4px 9px; border-radius:10px; }
+  .go { margin-top:16px; align-self:flex-start; background:linear-gradient(135deg,#7c8dff,#9a6bff);
+    color:#fff; font-weight:700; font-size:14px; padding:11px 20px; border-radius:14px; border:none; cursor:pointer;
+    text-decoration:none; display:inline-block; }
+  .go.alt { background:linear-gradient(135deg,#ff9db4,#ff6f91); }
+  .note { text-align:center; margin-top:44px; font-size:13px; color:#8a8598; line-height:1.8;
+    background:#fff8; padding:18px; border-radius:16px; max-width:760px; margin-left:auto; margin-right:auto; }
+  .note code { background:#efeaf8; padding:2px 7px; border-radius:6px; font-size:12.5px; }
+  #dmPreviewMsg { display:block; margin-top:8px; color:#c0507a; font-weight:700; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1><span class="emo">🐾</span> 돌아다니는 펫 · 기획안 모음</h1>
+      <p class="sub">노트북 · 데스크탑 · 모바일에서 키우는 펫. 클릭하면 반응하고, 먹이도 주고, 말도 걸 수 있어요.<br>세 가지 컨셉을 준비했습니다 — 마음에 드는 방향을 골라주세요!</p>
+    </header>
+
+    <div class="grid">
+      <!-- 기획안 1 -->
+      <a class="card" href="buddies/index.html">
+        <div class="thumb t1"><span class="big">🍡</span><span class="badge">웹앱</span></div>
+        <div class="body">
+          <div class="tag">기획안 #1 · 아기자기</div>
+          <h2>말랑 친구들</h2>
+          <p>파스텔 하늘 위를 둥둥 떠다니는 젤리 친구들. 캐릭터마다 배경 무드가 바뀌고, 배고픔·기분을 챙겨주는 감성 다마고치.</p>
+          <div class="feat"><span>4종 캐릭터</span><span>드래그 이동</span><span>배고픔·기분</span><span>말풍선</span></div>
+          <span class="go">체험하기 →</span>
+        </div>
+      </a>
+
+      <!-- 기획안 2 -->
+      <a class="card" href="pixel/index.html">
+        <div class="thumb t2"><span class="big">🎮</span><span class="badge">웹앱</span></div>
+        <div class="body">
+          <div class="tag">기획안 #2 · 레트로</div>
+          <h2>픽셀 다마고치 · 또리</h2>
+          <p>게임보이 감성의 손안의 게임기. 픽셀 캐릭터가 LCD 화면 속을 아장아장 돌아다녀요. 도트 감성 + 물리 버튼 UI.</p>
+          <div class="feat"><span>픽셀 아트</span><span>기기 UI</span><span>3종 캐릭터</span><span>하트 게이지</span></div>
+          <span class="go">체험하기 →</span>
+        </div>
+      </a>
+
+      <!-- 기획안 3 -->
+      <div class="card">
+        <div class="thumb t3"><span class="big">🐱</span><span class="badge">크롬 확장</span></div>
+        <div class="body">
+          <div class="tag">기획안 #3 · 데스크 메이트</div>
+          <h2>냥이 · 오버레이 펫</h2>
+          <p><b>다른 웹사이트를 띄워놓고 작업해도</b> 그 화면 위를 냥이가 돌아다녀요. 걷고, 자고, 클릭하면 반응하고, 먹이도 먹으러 갑니다. 크롬 확장으로 설치.</p>
+          <div class="feat"><span>모든 사이트 위</span><span>자유 배회</span><span>드래그</span><span>먹이·말걸기</span></div>
+          <button class="go alt" id="dmPreviewBtn">이 페이지에서 미리보기 ▶</button>
+          <span id="dmPreviewMsg"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      💡 <b>데스크 메이트 설치법</b> (어떤 사이트 위에서도 돌아다니게 하려면):<br>
+      크롬 주소창에 <code>chrome://extensions</code> → 우측 상단 <b>개발자 모드</b> 켜기 →
+      <b>압축해제된 확장 프로그램을 로드</b> → <code>deskmate-extension</code> 폴더 선택.<br>
+      설치 후 아무 웹사이트에서나 냥이가 등장합니다. 확장 아이콘을 누르면 켜기/끄기.
+    </div>
+  </div>
+
+  <script>
+    // "이 페이지에서 미리보기" — 확장의 pet.css + content.js를 그대로 주입
+    document.getElementById("dmPreviewBtn").addEventListener("click", () => {
+      if (window.__deskmateLoaded) { document.getElementById("dmPreviewMsg").textContent = "이미 냥이가 돌아다니고 있어요! 🐾"; return; }
+      const link = document.createElement("link");
+      link.rel = "stylesheet"; link.href = "deskmate-extension/pet.css";
+      document.head.appendChild(link);
+      const s = document.createElement("script");
+      s.src = "deskmate-extension/content.js";
+      document.body.appendChild(s);
+      document.getElementById("dmPreviewMsg").textContent = "냥이 등장! 이 페이지 위를 돌아다녀요 🐾 (마우스 올리면 먹이·말걸기 툴바)";
+    });
+  </script>
+</body>
+</html>
