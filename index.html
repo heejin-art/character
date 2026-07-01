@@ -3,115 +3,148 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>돌아다니는 펫 · 기획안 모음</title>
+<title>구름이 · 오버레이 데스크 펫</title>
 <style>
   * { box-sizing:border-box; margin:0; padding:0; }
   body {
     font-family:"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
-    background:linear-gradient(160deg,#eef4ff,#fef1f6 60%,#fff9ee);
-    color:#3a3550; min-height:100vh; padding:48px 20px 80px;
+    background:linear-gradient(160deg,#dbe8ff,#eef4ff 55%,#fef1f6);
+    color:#3a3550; min-height:100vh; padding:48px 20px 90px;
   }
-  .wrap { max-width:1040px; margin:0 auto; }
-  header { text-align:center; margin-bottom:14px; }
-  h1 { font-size:34px; letter-spacing:-1px; }
-  h1 .emo { font-size:30px; }
-  .sub { color:#7a7590; margin-top:10px; font-size:15px; line-height:1.6; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:22px; margin-top:38px; }
+  .wrap { max-width:960px; margin:0 auto; }
+  header { text-align:center; margin-bottom:8px; }
+  h1 { font-size:38px; letter-spacing:-1px; }
+  h1 .emo { font-size:34px; }
+  .sub { color:#6f7aa0; margin-top:12px; font-size:15px; line-height:1.7; }
+
+  /* 히어로 (메인 = 구름이 오버레이 펫) */
+  .hero {
+    margin-top:34px; background:#fff; border-radius:28px; overflow:hidden;
+    box-shadow:0 18px 46px rgba(90,110,180,.18); border:1px solid rgba(120,140,200,.1);
+  }
+  .stage {
+    position:relative; height:250px;
+    background:linear-gradient(160deg,#cfe0ff,#eaf2ff 70%);
+    overflow:hidden;
+  }
+  .stage .sun { position:absolute; top:26px; right:40px; width:54px; height:54px; border-radius:50%;
+    background:radial-gradient(circle at 40% 35%,#fff6c8,#ffd95e); box-shadow:0 0 34px rgba(255,214,90,.7); }
+  .stage .deco { position:absolute; bottom:0; font-size:30px; opacity:.55; filter:drop-shadow(0 4px 4px rgba(0,0,0,.08)); }
+  .hero-body { padding:26px 30px 30px; }
+  .kicker { font-size:12.5px; color:#7c8dff; font-weight:800; letter-spacing:1px; }
+  .hero-body h2 { font-size:26px; margin:6px 0 8px; }
+  .hero-body p { font-size:14.5px; color:#6a6478; line-height:1.7; max-width:640px; }
+  .feat { display:flex; flex-wrap:wrap; gap:7px; margin-top:16px; }
+  .feat span { font-size:12px; background:#eef3ff; color:#5b6699; padding:5px 11px; border-radius:11px; font-weight:600; }
+  .cta { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:22px; }
+  .btn {
+    background:linear-gradient(135deg,#7c8dff,#9a6bff); color:#fff; font-weight:700; font-size:15px;
+    padding:13px 24px; border-radius:15px; border:none; cursor:pointer; text-decoration:none; display:inline-block;
+    box-shadow:0 8px 20px rgba(124,141,255,.35); transition:transform .15s, box-shadow .15s;
+  }
+  .btn:hover { transform:translateY(-2px); box-shadow:0 12px 26px rgba(124,141,255,.45); }
+  #dmPreviewMsg { font-size:13px; color:#5566aa; font-weight:700; }
+
+  .install {
+    margin-top:16px; background:#f6f9ff; border:1px dashed rgba(120,140,200,.35);
+    border-radius:16px; padding:16px 18px; font-size:13px; color:#5b6486; line-height:1.9;
+  }
+  .install code { background:#e6edff; padding:2px 7px; border-radius:6px; font-size:12.5px; }
+  .install b { color:#4a5488; }
+
+  /* 다른 컨셉 (보조) */
+  .more-title { text-align:center; margin:52px 0 4px; font-size:15px; color:#8a90ac; font-weight:700; }
+  .more-sub { text-align:center; font-size:12.5px; color:#a6abc4; margin-bottom:22px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:18px; }
   .card {
-    background:#fff; border-radius:24px; overflow:hidden; text-decoration:none; color:inherit;
-    box-shadow:0 10px 30px rgba(90,80,140,.12); transition:transform .18s, box-shadow .18s;
+    background:#fff; border-radius:20px; overflow:hidden; text-decoration:none; color:inherit;
+    box-shadow:0 8px 22px rgba(90,80,140,.1); transition:transform .16s, box-shadow .16s;
     display:flex; flex-direction:column; border:1px solid rgba(120,110,160,.08);
   }
-  .card:hover { transform:translateY(-6px); box-shadow:0 18px 44px rgba(90,80,140,.2); }
-  .thumb { height:170px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+  .card:hover { transform:translateY(-5px); box-shadow:0 14px 34px rgba(90,80,140,.16); }
+  .thumb { height:120px; display:flex; align-items:center; justify-content:center; }
   .t1 { background:linear-gradient(160deg,#ffe6ef,#fff3f7); }
   .t2 { background:linear-gradient(160deg,#8fd14f,#5d9e2e); }
-  .t3 { background:linear-gradient(160deg,#dbeafe,#f0f7ff); }
-  .thumb .big { font-size:74px; filter:drop-shadow(0 6px 10px rgba(0,0,0,.15)); animation:bob 3s ease-in-out infinite; }
-  @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-  .badge { position:absolute; top:12px; right:12px; background:rgba(255,255,255,.85); color:#6a6478;
-    font-size:11px; font-weight:700; padding:5px 10px; border-radius:20px; }
-  .body { padding:20px 22px 24px; flex:1; display:flex; flex-direction:column; }
-  .body h2 { font-size:20px; margin-bottom:4px; }
-  .tag { font-size:12px; color:#a59fbb; font-weight:700; letter-spacing:.5px; margin-bottom:10px; }
-  .body p { font-size:14px; color:#6a6478; line-height:1.65; flex:1; }
-  .feat { display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
-  .feat span { font-size:11.5px; background:#f3f0fa; color:#6a6478; padding:4px 9px; border-radius:10px; }
-  .go { margin-top:16px; align-self:flex-start; background:linear-gradient(135deg,#7c8dff,#9a6bff);
-    color:#fff; font-weight:700; font-size:14px; padding:11px 20px; border-radius:14px; border:none; cursor:pointer;
-    text-decoration:none; display:inline-block; }
-  .go.alt { background:linear-gradient(135deg,#ff9db4,#ff6f91); }
-  .note { text-align:center; margin-top:44px; font-size:13px; color:#8a8598; line-height:1.8;
-    background:#fff8; padding:18px; border-radius:16px; max-width:760px; margin-left:auto; margin-right:auto; }
-  .note code { background:#efeaf8; padding:2px 7px; border-radius:6px; font-size:12.5px; }
-  #dmPreviewMsg { display:block; margin-top:8px; color:#c0507a; font-weight:700; }
+  .thumb .big { font-size:52px; filter:drop-shadow(0 5px 8px rgba(0,0,0,.14)); }
+  .cbody { padding:16px 18px 20px; }
+  .cbody h3 { font-size:17px; margin-bottom:4px; }
+  .cbody .tag { font-size:11px; color:#a59fbb; font-weight:700; letter-spacing:.5px; margin-bottom:8px; }
+  .cbody p { font-size:13px; color:#7a7590; line-height:1.6; }
 </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <h1><span class="emo">🐾</span> 돌아다니는 펫 · 기획안 모음</h1>
-      <p class="sub">노트북 · 데스크탑 · 모바일에서 키우는 펫. 클릭하면 반응하고, 먹이도 주고, 말도 걸 수 있어요.<br>세 가지 컨셉을 준비했습니다 — 마음에 드는 방향을 골라주세요!</p>
+      <h1><span class="emo">☁️</span> 구름이 · 오버레이 데스크 펫</h1>
+      <p class="sub">어떤 웹사이트를 띄워놓고 작업해도 그 화면 위를 <b>뭉게구름 구름이</b>가 둥실둥실 떠다녀요.<br>걷고, 낮잠 자고, 클릭하면 반응하고, 별을 주면 <b>먹으러 쪼르르 달려갑니다.</b></p>
     </header>
 
-    <div class="grid">
-      <!-- 기획안 1 -->
-      <a class="card" href="buddies/index.html">
-        <div class="thumb t1"><span class="big">🍡</span><span class="badge">웹앱</span></div>
-        <div class="body">
-          <div class="tag">기획안 #1 · 아기자기</div>
-          <h2>말랑 친구들</h2>
-          <p>파스텔 하늘 위를 둥둥 떠다니는 젤리 친구들. 캐릭터마다 배경 무드가 바뀌고, 배고픔·기분을 챙겨주는 감성 다마고치.</p>
-          <div class="feat"><span>4종 캐릭터</span><span>드래그 이동</span><span>배고픔·기분</span><span>말풍선</span></div>
-          <span class="go">체험하기 →</span>
+    <!-- 메인: 구름이 오버레이 펫 -->
+    <section class="hero">
+      <div class="stage" id="dmStage">
+        <div class="sun"></div>
+        <span class="deco" style="left:8%">🌳</span>
+        <span class="deco" style="left:30%; font-size:22px">🌷</span>
+        <span class="deco" style="right:16%">🏠</span>
+        <span class="deco" style="right:4%; font-size:22px">🌼</span>
+        <!-- 구름이는 여기(및 이 페이지 전체) 위를 돌아다녀요 -->
+      </div>
+      <div class="hero-body">
+        <div class="kicker">CHROME 확장 · 모든 사이트 위 오버레이</div>
+        <h2>구름이 데려오기 ☁️</h2>
+        <p>순수 CSS 도형으로 그린 오리지널 캐릭터라 저작권/카피 이슈가 없어요. 아래 버튼을 누르면 <b>설치 없이 이 페이지에서 바로</b> 구름이를 만날 수 있습니다.</p>
+        <div class="feat">
+          <span>모든 사이트 위</span><span>자유 배회</span><span>드래그 이동</span>
+          <span>⭐ 별 먹이주기</span><span>💬 말걸기</span><span>😴 낮잠</span>
         </div>
-      </a>
-
-      <!-- 기획안 2 -->
-      <a class="card" href="pixel/index.html">
-        <div class="thumb t2"><span class="big">🎮</span><span class="badge">웹앱</span></div>
-        <div class="body">
-          <div class="tag">기획안 #2 · 레트로</div>
-          <h2>픽셀 다마고치 · 또리</h2>
-          <p>게임보이 감성의 손안의 게임기. 픽셀 캐릭터가 LCD 화면 속을 아장아장 돌아다녀요. 도트 감성 + 물리 버튼 UI.</p>
-          <div class="feat"><span>픽셀 아트</span><span>기기 UI</span><span>3종 캐릭터</span><span>하트 게이지</span></div>
-          <span class="go">체험하기 →</span>
-        </div>
-      </a>
-
-      <!-- 기획안 3 -->
-      <div class="card">
-        <div class="thumb t3"><span class="big">🐱</span><span class="badge">크롬 확장</span></div>
-        <div class="body">
-          <div class="tag">기획안 #3 · 데스크 메이트</div>
-          <h2>냥이 · 오버레이 펫</h2>
-          <p><b>다른 웹사이트를 띄워놓고 작업해도</b> 그 화면 위를 냥이가 돌아다녀요. 걷고, 자고, 클릭하면 반응하고, 먹이도 먹으러 갑니다. 크롬 확장으로 설치.</p>
-          <div class="feat"><span>모든 사이트 위</span><span>자유 배회</span><span>드래그</span><span>먹이·말걸기</span></div>
-          <button class="go alt" id="dmPreviewBtn">이 페이지에서 미리보기 ▶</button>
+        <div class="cta">
+          <button class="btn" id="dmPreviewBtn">이 페이지에서 바로 만나기 ▶</button>
           <span id="dmPreviewMsg"></span>
         </div>
+        <div class="install">
+          💡 <b>크롬에 정식 설치</b> (모든 사이트 위에서 돌아다니게):<br>
+          주소창에 <code>chrome://extensions</code> → 우측 상단 <b>개발자 모드</b> 켜기 →
+          <b>압축해제된 확장 프로그램을 로드</b> → <code>deskmate-extension</code> 폴더 선택.<br>
+          설치 후 아무 웹사이트에서나 구름이가 등장합니다. 확장 아이콘을 누르면 켜기/끄기.
+        </div>
       </div>
-    </div>
+    </section>
 
-    <div class="note">
-      💡 <b>데스크 메이트 설치법</b> (어떤 사이트 위에서도 돌아다니게 하려면):<br>
-      크롬 주소창에 <code>chrome://extensions</code> → 우측 상단 <b>개발자 모드</b> 켜기 →
-      <b>압축해제된 확장 프로그램을 로드</b> → <code>deskmate-extension</code> 폴더 선택.<br>
-      설치 후 아무 웹사이트에서나 냥이가 등장합니다. 확장 아이콘을 누르면 켜기/끄기.
+    <!-- 보조: 다른 컨셉 -->
+    <p class="more-title">☀️ 다른 컨셉도 구경하기</p>
+    <p class="more-sub">같은 오리지널 캐릭터 세계관으로 만든 웹앱 실험작</p>
+    <div class="grid">
+      <a class="card" href="buddies/index.html">
+        <div class="thumb t1"><span class="big">🍡</span></div>
+        <div class="cbody">
+          <div class="tag">웹앱 · 아기자기</div>
+          <h3>말랑 친구들</h3>
+          <p>파스텔 하늘 위 젤리 친구들. 캐릭터별 배경 무드 · 배고픔/기분 스탯 · 말풍선.</p>
+        </div>
+      </a>
+      <a class="card" href="pixel/index.html">
+        <div class="thumb t2"><span class="big">🎮</span></div>
+        <div class="cbody">
+          <div class="tag">웹앱 · 레트로</div>
+          <h3>픽셀 다마고치 · 또리</h3>
+          <p>게임보이 감성의 손안의 게임기. 픽셀 캐릭터가 LCD 화면 속을 아장아장.</p>
+        </div>
+      </a>
     </div>
   </div>
 
   <script>
-    // "이 페이지에서 미리보기" — 확장의 pet.css + content.js를 그대로 주입
+    // "이 페이지에서 바로 만나기" — 확장의 pet.css + content.js를 그대로 주입
     document.getElementById("dmPreviewBtn").addEventListener("click", () => {
-      if (window.__deskmateLoaded) { document.getElementById("dmPreviewMsg").textContent = "이미 냥이가 돌아다니고 있어요! 🐾"; return; }
+      const msg = document.getElementById("dmPreviewMsg");
+      if (window.__deskmateLoaded) { msg.textContent = "이미 구름이가 둥실둥실 떠다니고 있어요! ☁️"; return; }
       const link = document.createElement("link");
       link.rel = "stylesheet"; link.href = "deskmate-extension/pet.css";
       document.head.appendChild(link);
       const s = document.createElement("script");
       s.src = "deskmate-extension/content.js";
       document.body.appendChild(s);
-      document.getElementById("dmPreviewMsg").textContent = "냥이 등장! 이 페이지 위를 돌아다녀요 🐾 (마우스 올리면 먹이·말걸기 툴바)";
+      msg.textContent = "구름이 등장! 이 페이지 위를 떠다녀요 ☁️ (마우스 올리면 별·말걸기 툴바)";
     });
   </script>
 </body>
